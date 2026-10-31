@@ -1,61 +1,69 @@
 # EcoConnect Ekiti
 
-EcoConnect Ekiti is a mobile-first app for reporting community problems in Ikole and Oye, tracking their status, and helping admins route reports to the right office. The frontend uses React, Vite, React Router and Tailwind CSS; the API uses Express, Supabase and Gemma 4.
+EcoConnect Ekiti is a starter monorepo for a mobile-first community reporting app for Ikole and Oye, Ekiti. The planned product lets residents submit a problem with text, a photo, a location and optionally a voice note; track its status; and lets admins review and route reports. The repository currently contains scaffolding, not the complete product: API, pages, database schema, examples, and docs files may be empty, and the app routes and report flows are not implemented yet.
 
-## Workspace layout
+## Workspace
 
 ```text
 apps/
-  web/   React + Vite frontend
-  api/   Express API, Supabase schema, scripts and AI helpers
-  docs/  API contract, AI evaluation notes and design assets
+  web/   React, TypeScript, Vite frontend
+  api/   Express, TypeScript API scaffold; Supabase and AI helpers
+  docs/  API contract, AI test notes, design assets
+package.json
 pnpm-workspace.yaml
+pnpm-lock.yaml
 ```
 
-The repository is a pnpm workspace. Each app is a separate workspace package (`@ecoconnect/web`, `@ecoconnect/api`).
+The workspace packages are `@ecoconnect/web` and `@ecoconnect/api`. Root `package.json` pins **pnpm 11.18.0**. Run commands from the repository root.
 
-## Install and run
+## Install and available commands
 
-Install dependencies from the repository root:
+Requires Node.js and Corepack with pnpm 11.18.0 available.
 
 ```sh
-pnpm install
+corepack pnpm install
+corepack pnpm dev:web
+corepack pnpm dev:api
+corepack pnpm build:web
 ```
 
-Run the web app and API in separate terminals:
+`dev:web` starts Vite. Its `/api` proxy targets `http://localhost:3001`. `dev:api` starts the API with `tsx watch`; the current `apps/api/server.ts` is empty, so the API is not operational yet. `build:web` builds the frontend scaffold. The root `build` script runs package build scripts, but the API currently has no TypeScript project configuration or implemented build setup; use `build:web` for the presently supported build.
 
-```sh
-pnpm dev:web
-pnpm dev:api
-```
+## Packages
 
-Vite forwards `/api` requests to `http://localhost:3001`. Build the web app with `pnpm build:web`; run workspace builds with `pnpm build`.
+- **Web** (`apps/web`): React 19, React Router, Vite 6, TypeScript, Tailwind CSS 3. Entry files are `src/main.tsx`, `src/App.tsx`, and `src/index.css`. The seven page files are placeholders.
+- **API** (`apps/api`): Express 4, Supabase JS, dotenv, cors, multer, and zod, with TypeScript and tsx for development. Routes, middleware, database schema, AI helpers and scripts are placeholders.
+- **Docs** (`apps/docs`): `api-contract.md` and `ai-test-results.md` are intended documentation locations; `design/` is for design assets.
 
-## Environment and database
+## Configuration status
 
-Copy `apps/api/.env.example` to `apps/api/.env` and `apps/web/.env.example` to `apps/web/.env`, then configure the variables described in the environment section below. Never commit `.env` files. Apply `apps/api/db/schema.sql` in Supabase and create a `report-media` storage bucket.
+The `.env.example` files are empty placeholders. The following variables are planned but are not yet wired into implemented code. Create local `.env` files only after the app configuration is implemented; never commit secrets.
 
-| Variable | App | Purpose |
+| Variable | App | Intended purpose |
 | --- | --- | --- |
 | `SUPABASE_URL` | API | Supabase project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | API | Server-only database key |
+| `SUPABASE_SERVICE_ROLE_KEY` | API | Server-only database key; never expose to the browser |
 | `ADMIN_PIN` | API | Admin login PIN |
 | `SESSION_SECRET` | API | Signs the admin session cookie |
 | `GEMMA_API_URL` | API | Gemma endpoint |
 | `GEMMA_API_KEY` | API | Optional endpoint key |
 | `GEMMA_MODEL` | API | Model identifier |
-| `AI_FORCE_FAIL` | API | Forces AI fallback when `true` |
-| `PORT` | API | API port (default 3001) |
-| `VITE_USE_MOCK` | Web | Use mock API data when `true` |
+| `AI_FORCE_FAIL` | API | Exercise the planned AI fallback |
+| `PORT` | API | Intended API port, default 3001 |
+| `VITE_USE_MOCK` | Web | Planned mock-data switch |
 
-## Changes in this workspace migration
+The database schema is currently empty. When implemented, the plan is to apply `apps/api/db/schema.sql` in Supabase and create a `report-media` bucket.
 
-- Moved `frontend/` to `apps/web/` and named its workspace package `@ecoconnect/web`.
-- Moved `backend/` to `apps/api/` and defined its scripts and runtime/development dependencies there.
-- Moved `docs/` to `apps/docs/` and added a docs index.
-- Added root `package.json` scripts for installing, developing and building the workspace, plus `pnpm-workspace.yaml`.
-- Kept the existing README architecture, feature list, API behavior, data model, shared values, testing notes and limitations as the project specification. Implementation remains a starter scaffold.
+## Product specification
 
-## Project specification
+The intended report analysis fields and shared values are described in the original project specification: eight categories (`waste`, `drainage`, `road`, `water`, `streetlight`, `power_outage`, `hostel_facility`, `other`), four severities (`low`, `medium`, `high`, `urgent`), four statuses (`pending`, `forwarded`, `in_progress`, `resolved`) and language codes (`en`, `yo`, `pcm`). Gemma 4 is intended to classify reports, summarize English/Yoruba/Pidgin submissions, flag uncertain analyses for human review and draft a message for the responsible office. The app must not claim the office received a report unless that is confirmed.
 
-The app should accept reports with text, photos, locations and optional voice notes; use Gemma 4 to classify category and severity, detect language, summarize and draft a forwarding message; preserve reports and status history in Supabase; and let citizens track report references. Admins review reports and update status. See [API contract](apps/docs/api-contract.md) and [AI test results](apps/docs/ai-test-results.md).
+Planned API endpoints and data shapes belong in [the API contract](apps/docs/api-contract.md); evaluation results belong in [AI test results](apps/docs/ai-test-results.md). Those files are placeholders and do not yet document implemented behavior.
+
+## Changes in the pnpm migration
+
+- Moved the React app from `frontend/` to `apps/web/` and renamed its package `@ecoconnect/web`.
+- Moved the Express backend from `backend/` to `apps/api/` and named it `@ecoconnect/api`.
+- Moved project docs from `docs/` to `apps/docs/` and added a docs index.
+- Added root workspace configuration (`pnpm-workspace.yaml`), scripts, pnpm 11.18.0 pin and lockfile.
+- Added `.gitignore` rules for environment files, dependency folders, and build output while allowing `.env.example` templates.
