@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #173b2b;
+  background: #f4f8f3;
+}
+main {
+  max-width: 56rem;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+}
