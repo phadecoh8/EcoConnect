@@ -18,13 +18,13 @@ The workspace packages are `@ecoconnect/web` and `@ecoconnect/api`. Root `packag
 
 ## Install and available commands
 
-Requires Node.js and Corepack with pnpm 11.18.0 available.
+Requires Node.js and pnpm 11.18.0.
 
 ```sh
-corepack pnpm install
-corepack pnpm dev:web
-corepack pnpm dev:api
-corepack pnpm build:web
+pnpm install
+pnpm dev:web
+pnpm dev:api
+pnpm build:web
 ```
 
 `dev:web` starts Vite. Its `/api` proxy targets `http://localhost:3001`. `dev:api` starts the API with `tsx watch`; the current `apps/api/server.ts` is empty, so the API is not operational yet. `build:web` builds the frontend scaffold. The root `build` script runs package build scripts, but the API currently has no TypeScript project configuration or implemented build setup; use `build:web` for the presently supported build.
@@ -67,3 +67,4 @@ Planned API endpoints and data shapes belong in [the API contract](apps/docs/api
 - Moved project docs from `docs/` to `apps/docs/` and added a docs index.
 - Added root workspace configuration (`pnpm-workspace.yaml`), scripts, pnpm 11.18.0 pin and lockfile.
 - Added `.gitignore` rules for environment files, dependency folders, and build output while allowing `.env.example` templates.
+
